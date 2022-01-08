@@ -11,8 +11,7 @@ What it does:
 
 ## Installation
 
-`install nuget package command`
-
+`dotnet tool install -g thammett.DevopsQuickstart`
 
 ## Granting DevopsQuickstart Access 
 
