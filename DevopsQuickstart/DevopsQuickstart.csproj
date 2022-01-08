@@ -6,7 +6,9 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>thammett.DevopsQuickstart</PackageId>
         <Title>DevopsQuickstart</Title>
-        <Authors>Terry Hammett</Authors>
+        <Authors>thammett</Authors>
+        <PackageProjectUrl>https://github.com/thammet/devops-quickstart</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/thammet/devops-quickstart</RepositoryUrl>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>devops-quickstart</ToolCommandName>
     </PropertyGroup>

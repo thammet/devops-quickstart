@@ -41,8 +41,7 @@ You must create an App Registration in the Azure Portal that gives permission to
 
 ## Running the tool 
 
-`command to run`
-
+`devops-quickstart -t [YOUR_TENANT_ID] -c [YOUR_APP_REGISTRATION_CLIENT_ID] -o [YOUR_ORGANIZATION_URL]`
 
 # Getting Custom 
 
