@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using DevopsQuickstart.Models.Options;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -25,24 +26,40 @@ namespace DevopsQuickstart.Services
 
 		public void CreateRepository()
 		{
-			var repoPath = Repository.Discover(Directory.GetCurrentDirectory());
+			var directory = Directory.GetCurrentDirectory();
+			var repoPath = Repository.Discover(directory) ?? Repository.Init(directory);
 
-			if (repoPath != null)
-			{
-				throw new Exception($"Repository already initialized at : {repoPath}");
-			}
-			
-			repoPath = Repository.Init(Directory.GetCurrentDirectory());
 			_repository = new Repository(repoPath);
 		}
 
 		public void PushToDevopsRepository(DevopsRepository devopsRepository)
 		{
-			CommitChanges();
-
-			var remote = _repository.Network.Remotes.Add("origin", devopsRepository.RemoteUrl);
+			try
+			{
+				CommitChanges();
+			}
+			catch
+			{
+				// Do nothing
+			}
+			
+			var remote = GetRemote(devopsRepository);
 			
 			Push(remote);
+		}
+
+		private Remote GetRemote(DevopsRepository devopsRepository)
+		{
+			var remote = _repository.Network.Remotes.FirstOrDefault(r => r.Name == "origin");
+
+			if (remote is null)
+			{
+				return _repository.Network.Remotes.Add("origin", devopsRepository.RemoteUrl);
+			}
+
+			_repository.Network.Remotes.Update("origin", r => r.Url = devopsRepository.RemoteUrl);
+			
+			return remote;
 		}
 		
 		private void CommitChanges()

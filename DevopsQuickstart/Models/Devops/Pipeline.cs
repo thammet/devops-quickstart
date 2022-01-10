@@ -7,6 +7,9 @@ namespace DevopsQuickstart.Models.Devops
 		[JsonProperty("_links")]
 		public PipelineLinks Links { get; set; }
 
+		[JsonProperty("name")]
+		public string Name { get; set; }
+		
 		public class PipelineLinks
 		{
 			public Link Web { get; set; }

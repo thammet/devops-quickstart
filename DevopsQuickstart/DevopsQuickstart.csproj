@@ -12,6 +12,7 @@
         <RepositoryUrl>https://github.com/thammet/devops-quickstart</RepositoryUrl>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>devops-quickstart</ToolCommandName>
+        <PackageVersion>1.1.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +21,7 @@
         <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0175" />
         <PackageReference Include="Microsoft.Identity.Client" Version="4.29.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="thammett.InteractiveConsole" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

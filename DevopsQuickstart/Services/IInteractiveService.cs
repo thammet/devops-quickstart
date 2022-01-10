@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DevopsQuickstart.Models.Devops;
+using InteractiveConsole;
 
 namespace DevopsQuickstart.Services
 {
@@ -11,6 +12,8 @@ namespace DevopsQuickstart.Services
 		List<Project> Projects { get; set; }
 		Repository Repository { get; set; }
 		CreateRepositoryRequest GetCreateRepositoryRequest();
+		bool ShouldPushCodeNow();
+		bool ShouldCreatePipelinesNow();
 		List<CreatePipelineRequest> GetCreatePipelineRequests();
 
 		void ShowMessage(string message);
@@ -25,7 +28,7 @@ namespace DevopsQuickstart.Services
 		public CreateRepositoryRequest GetCreateRepositoryRequest()
 		{
 			var selectedProject = PromptToSelectProject();
-			var repositoryName = PromptForRepositoryName();
+			var repositoryName = Input.Get($"Repository name for '{selectedProject.Name}'");
 				
 			return new CreateRepositoryRequest
 			{
@@ -47,30 +50,28 @@ namespace DevopsQuickstart.Services
 				return requests;
 			}
 			
+			var menu = new Menu<string>();
+
+			foreach (var ymlFile in ymlFiles)
+			{
+				menu = menu.AddOption(ymlFile);
+			}
+			
 			while (true)
 			{
-				for (var i = 0; i < ymlFiles.Count; i++)
-				{
-					Console.WriteLine($"{i}: {ymlFiles[i]}");
-				}
+				var ymlFile = menu.Get("Select yml file to create a pipeline for", true);
 
-				var text = Prompt("Select the yml files to create a pipeline for by entering the index number and then a name. Enter 'exit' after selecting all desired files");
-				if (text == "exit")
+				if (ymlFile is null)
 				{
 					return requests;
 				}
-
-				if (!int.TryParse(text, out var indexNumber) || indexNumber < 0 || indexNumber >= ymlFiles.Count)
-				{
-					continue;
-				}
-
+				
 				requests.Add(new CreatePipelineRequest
 				{
-					Name = PromptForPipelineName(),
+					Name = Input.Get($"Pipeline name for '{ymlFile}'"),
 					Configuration = new CreatePipelineRequest.CreatePipelineRequestConfiguration
 					{
-						Path = ymlFiles[indexNumber],
+						Path = ymlFile,
 						Type = "yaml",
 						Repository = new CreatePipelineRequest.CreatePipelineRequestConfiguration.CreatePipelineRequestConfigurationRepository
 						{
@@ -83,36 +84,28 @@ namespace DevopsQuickstart.Services
 			}
 		}
 
+		public bool ShouldPushCodeNow()
+		{
+			return Prompt.Get($"Do you want to push code to '{Repository.Name}' now?");
+		}
+
+		public bool ShouldCreatePipelinesNow()
+		{
+			return Prompt.Get($"Do you want to create pipelines for '{Repository.Name}' now?");
+		}
+
 		private Project PromptToSelectProject()
 		{
-			for (var i = 0; i < Projects.Count; i++)
+			var menu = new Menu<Project>();
+
+			foreach (var project in Projects)
 			{
-				Console.WriteLine($"{i}: {Projects[i].Name} - {Projects[i].Id}");
+				menu = menu.AddOption(project.Name, project);
 			}
-            
-			Console.Write("Select the project to create the repository under by entering the index number: ");
-				
-			var indexNumber = int.Parse(Console.ReadLine());
 
-			return Projects[indexNumber];
+			return menu.Get("Select a DevOps project");
 		}
 
-		private static string PromptForRepositoryName()
-		{
-			return Prompt("Repository name");
-		}
-
-		private static string PromptForPipelineName()
-		{
-			return Prompt("Pipeline name");
-		}
-
-		private static string Prompt(string text)
-		{
-			Console.Write($"{text}: ");
-			return Console.ReadLine();
-		}
-		
 		private static List<string> GetYmlFiles()
 		{
 			var directory = Directory.GetCurrentDirectory();
