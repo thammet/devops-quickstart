@@ -9,7 +9,7 @@
         <PackageProjectUrl>https://github.com/thammet/devops-quickstart</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/thammet/devops-quickstart/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/thammet/devops-quickstart</RepositoryUrl>
-        <PackageVersion>1.2.0</PackageVersion>
+        <PackageVersion>1.2.1</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>

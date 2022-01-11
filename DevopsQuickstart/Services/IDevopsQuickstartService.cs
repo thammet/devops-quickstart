@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DevopsQuickstart.Models;
 using DevopsQuickstart.Models.Devops;
 
 namespace DevopsQuickstart.Services
 {
 	public interface IDevopsQuickstartService
 	{
-		Task QuickStart();
+		Task<DevopsQuickstartResult> QuickStart();
 	}
 
 	public class DevopsQuickstartService : IDevopsQuickstartService
@@ -22,7 +23,7 @@ namespace DevopsQuickstart.Services
 			_gitService = gitService;
 		}
 
-		public virtual async Task QuickStart()
+		public virtual async Task<DevopsQuickstartResult> QuickStart()
 		{
 			_interactiveService.Projects = await _devopsService.GetAvailableProjects();
 
@@ -34,6 +35,12 @@ namespace DevopsQuickstart.Services
 			{
 				_interactiveService.ShowMessage($"Created Pipeline '{pipeline.Name}': {pipeline.Links.Web.Href}");
 			}
+
+			return new DevopsQuickstartResult
+			{
+				Repository = repository,
+				Pipelines = pipelines
+			};
 		}
 
 		private async Task<Repository> CreateRepository()
