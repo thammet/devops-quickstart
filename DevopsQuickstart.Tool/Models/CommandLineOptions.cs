@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace DevopsQuickstart.Models.Options
+namespace DevopsQuickstart.Tool.Models
 {
 	public class CommandLineOptions
 	{

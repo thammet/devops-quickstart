@@ -10,28 +10,24 @@ namespace DevopsQuickstart.Services
 {
 	public interface IGitService
 	{
-		void CreateRepository();
 		void PushToDevopsRepository(DevopsRepository devopsRepository);
 	}
 
 	public class GitService : IGitService
 	{
-		private readonly GitOptions _options;
-		private Repository _repository;
+		protected readonly GitOptions Options;
+		protected readonly Repository Repository;
 
 		public GitService(GitOptions options)
 		{
-			_options = options;
-		}
-
-		public void CreateRepository()
-		{
+			Options = options;
+			
 			var directory = Directory.GetCurrentDirectory();
 			var repoPath = Repository.Discover(directory) ?? Repository.Init(directory);
 
-			_repository = new Repository(repoPath);
+			Repository = new Repository(repoPath);
 		}
-
+		
 		public void PushToDevopsRepository(DevopsRepository devopsRepository)
 		{
 			try
@@ -50,25 +46,25 @@ namespace DevopsQuickstart.Services
 
 		private Remote GetRemote(DevopsRepository devopsRepository)
 		{
-			var remote = _repository.Network.Remotes.FirstOrDefault(r => r.Name == "origin");
+			var remote = Repository.Network.Remotes.FirstOrDefault(r => r.Name == "origin");
 
 			if (remote is null)
 			{
-				return _repository.Network.Remotes.Add("origin", devopsRepository.RemoteUrl);
+				return Repository.Network.Remotes.Add("origin", devopsRepository.RemoteUrl);
 			}
 
-			_repository.Network.Remotes.Update("origin", r => r.Url = devopsRepository.RemoteUrl);
+			Repository.Network.Remotes.Update("origin", r => r.Url = devopsRepository.RemoteUrl);
 			
 			return remote;
 		}
 		
 		private void CommitChanges()
 		{
-			Commands.Stage(_repository, "*"); // Stage everything
-			_repository.Index.Write();
+			Commands.Stage(Repository, "*"); // Stage everything
+			Repository.Index.Write();
 			
-			var committer = new Signature("Devops Quickstart", _options.Username, DateTime.Now);
-			_repository.Commit("Quickstart commiting changes", committer, committer);
+			var committer = new Signature("Devops Quickstart", Options.Username, DateTime.Now);
+			Repository.Commit("Quickstart commiting changes", committer, committer);
 		}
 
 		private void Push(Remote remote)
@@ -78,16 +74,16 @@ namespace DevopsQuickstart.Services
 				CredentialsProvider = new CredentialsHandler((url, usernameFromUrl, types) => 
 					new UsernamePasswordCredentials() 
 					{
-						Username = _options.Username,
-						Password = _options.Password
+						Username = Options.Username,
+						Password = Options.Password
 					})
 			};
             
-			_repository.Branches.Update(_repository.Head,
+			Repository.Branches.Update(Repository.Head,
 				b => b.Remote = remote.Name,
-				b => b.UpstreamBranch = _repository.Head.CanonicalName);
+				b => b.UpstreamBranch = Repository.Head.CanonicalName);
             
-			_repository.Network.Push(_repository.Head, options);
+			Repository.Network.Push(Repository.Head, options);
 		}
 	}
 }

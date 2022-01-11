@@ -1,23 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>thammett.DevopsQuickstart</PackageId>
-        <Title>DevopsQuickstart</Title>
+        <PackageId>thammett.DevopsQuickstart.Tool</PackageId>
+        <Title>DevopsQuickstart Tool</Title>
         <Authors>thammett</Authors>
         <PackageProjectUrl>https://github.com/thammet/devops-quickstart</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/thammet/devops-quickstart/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/thammet/devops-quickstart</RepositoryUrl>
-        <PackageVersion>1.2.0</PackageVersion>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>devops-quickstart</ToolCommandName>
+        <PackageVersion>1.0.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
-        <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0175" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="thammett.InteractiveConsole" Version="1.0.0" />
+        <PackageReference Include="Microsoft.Identity.Client" Version="4.29.0" />
+        <ProjectReference Include="..\DevopsQuickstart\DevopsQuickstart.csproj" />
     </ItemGroup>
 
 </Project>

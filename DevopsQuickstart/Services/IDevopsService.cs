@@ -19,21 +19,21 @@ namespace DevopsQuickstart.Services
 
 	public class DevopsService : IDevopsService
 	{
-		private readonly HttpClient _devopsHttpClient;
+		protected readonly HttpClient DevopsHttpClient;
 
 		public DevopsService(DevopsOptions devopsOptions)
 		{
-			_devopsHttpClient = new HttpClient();
-			_devopsHttpClient.BaseAddress = new Uri(devopsOptions.OrganizationUrl);
-			_devopsHttpClient.DefaultRequestHeaders.Accept.Clear();
-			_devopsHttpClient.DefaultRequestHeaders.Add("User-Agent", "VstsRestApiSamples");
-			_devopsHttpClient.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
-			_devopsHttpClient.DefaultRequestHeaders.Add("Authorization", devopsOptions.AuthHeader);
+			DevopsHttpClient = new HttpClient();
+			DevopsHttpClient.BaseAddress = new Uri(devopsOptions.OrganizationUrl);
+			DevopsHttpClient.DefaultRequestHeaders.Accept.Clear();
+			DevopsHttpClient.DefaultRequestHeaders.Add("User-Agent", "VstsRestApiSamples");
+			DevopsHttpClient.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
+			DevopsHttpClient.DefaultRequestHeaders.Add("Authorization", devopsOptions.AuthHeader);
 		}
 		
 		public async Task<List<Project>> GetAvailableProjects()
 		{
-			var response = await _devopsHttpClient.GetAsync("_apis/projects?stateFilter=All&api-version=2.2");
+			var response = await DevopsHttpClient.GetAsync("_apis/projects?stateFilter=All&api-version=2.2");
 			
 			response.EnsureSuccessStatusCode();
 
@@ -43,7 +43,7 @@ namespace DevopsQuickstart.Services
 
 		public async Task<Repository> CreateRepository(CreateRepositoryRequest request)
 		{
-			var response = await _devopsHttpClient.PostAsync("_apis/git/repositories?api-version=6.0", GetRequestBody(request));
+			var response = await DevopsHttpClient.PostAsync("_apis/git/repositories?api-version=6.0", GetRequestBody(request));
 
 			response.EnsureSuccessStatusCode();
             
@@ -52,7 +52,7 @@ namespace DevopsQuickstart.Services
 
 		public async Task<Pipeline> CreatePipeline(Repository repository, CreatePipelineRequest request)
 		{
-			var response = await _devopsHttpClient.PostAsync($"{repository.Project.Id}/_apis/pipelines?api-version=6.0-preview.1", GetRequestBody(request));
+			var response = await DevopsHttpClient.PostAsync($"{repository.Project.Id}/_apis/pipelines?api-version=6.0-preview.1", GetRequestBody(request));
 			
 			response.EnsureSuccessStatusCode();
             

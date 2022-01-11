@@ -6,12 +6,11 @@ What it does:
 * Create a repository on Azure DevOps
 * Create and link [build pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) via any yml files it discovers in the codebase 
 
-
-# How to use DevopsQuickstart
+# How to use DevopsQuickstart Tool
 
 ## Installation
 
-`dotnet tool install -g thammett.DevopsQuickstart`
+`dotnet tool install -g thammett.DevopsQuickstart.Tool`
 
 ## Granting DevopsQuickstart Access 
 

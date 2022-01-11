@@ -22,7 +22,7 @@ namespace DevopsQuickstart.Services
 			_gitService = gitService;
 		}
 
-		public async Task QuickStart()
+		public virtual async Task QuickStart()
 		{
 			_interactiveService.Projects = await _devopsService.GetAvailableProjects();
 
@@ -38,8 +38,6 @@ namespace DevopsQuickstart.Services
 
 		private async Task<Repository> CreateRepository()
 		{
-			_gitService.CreateRepository();
-			
 			_interactiveService.Repository = await _devopsService.CreateRepository(_interactiveService.GetCreateRepositoryRequest());
 
 			if (_interactiveService.ShouldPushCodeNow())
