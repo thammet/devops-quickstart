@@ -13,6 +13,7 @@ namespace DevopsQuickstart
 				.AddTransient<IGitService, GitService>()
 				.AddTransient<IDevopsService, DevopsService>()
 				.AddTransient<IInteractiveService, CliService>()
+				.AddTransient<IRetryService, RetryService>()
 				.AddSingleton(devopsOptions)
 				.AddSingleton(gitOptions);
 		}

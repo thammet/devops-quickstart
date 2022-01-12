@@ -14,7 +14,8 @@ namespace DevopsQuickstart.Services
 		CreateRepositoryRequest GetCreateRepositoryRequest();
 		bool ShouldPushCodeNow();
 		bool ShouldCreatePipelinesNow();
-		List<CreatePipelineRequest> GetCreatePipelineRequests();
+		bool ShouldRetry();
+		CreatePipelineRequest GetCreatePipelineRequest();
 
 		void ShowMessage(string message);
 		void ShowError(string message);
@@ -40,14 +41,13 @@ namespace DevopsQuickstart.Services
 			};
 		}
 
-		public List<CreatePipelineRequest> GetCreatePipelineRequests()
+		public CreatePipelineRequest GetCreatePipelineRequest()
 		{
 			var ymlFiles = GetYmlFiles();
-			var requests = new List<CreatePipelineRequest>();
 			
 			if (!ymlFiles.Any())
 			{
-				return requests;
+				return null;
 			}
 			
 			var menu = new Menu<string>();
@@ -57,31 +57,30 @@ namespace DevopsQuickstart.Services
 				menu = menu.AddOption(ymlFile);
 			}
 			
-			while (true)
-			{
-				var ymlFile = menu.Get("Select yml file to create a pipeline for", true);
+			var selectedYmlFile = menu.Get("Select yml file to create a pipeline for", true);
 
-				if (ymlFile is null)
-				{
-					return requests;
-				}
-				
-				requests.Add(new CreatePipelineRequest
-				{
-					Name = Input.Get($"Pipeline name for '{ymlFile}'"),
-					Configuration = new CreatePipelineRequest.CreatePipelineRequestConfiguration
-					{
-						Path = ymlFile,
-						Type = "yaml",
-						Repository = new CreatePipelineRequest.CreatePipelineRequestConfiguration.CreatePipelineRequestConfigurationRepository
-						{
-							Id = Repository.Id, 
-							Name = Repository.Name,
-							Type = "azureReposGit"
-						}
-					}
-				});
+			if (selectedYmlFile is null)
+			{
+				return null;
 			}
+
+			return new CreatePipelineRequest
+			{
+				Name = Input.Get($"Pipeline name for '{selectedYmlFile}'"),
+				Configuration = new CreatePipelineRequest.CreatePipelineRequestConfiguration
+				{
+					Path = selectedYmlFile,
+					Type = "yaml",
+					Repository =
+						new CreatePipelineRequest.CreatePipelineRequestConfiguration.
+							CreatePipelineRequestConfigurationRepository
+							{
+								Id = Repository.Id,
+								Name = Repository.Name,
+								Type = "azureReposGit"
+							}
+				}
+			};
 		}
 
 		public bool ShouldPushCodeNow()
@@ -92,6 +91,11 @@ namespace DevopsQuickstart.Services
 		public bool ShouldCreatePipelinesNow()
 		{
 			return Prompt.Get($"Do you want to create pipelines for '{Repository.Name}' now?");
+		}
+
+		public bool ShouldRetry()
+		{
+			return Prompt.Get($"Would you like to try again?");
 		}
 
 		private Project PromptToSelectProject()
