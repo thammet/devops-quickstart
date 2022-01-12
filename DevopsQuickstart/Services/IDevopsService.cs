@@ -44,10 +44,7 @@ namespace DevopsQuickstart.Services
 		public async Task<Repository> CreateRepository(CreateRepositoryRequest request)
 		{
 			var response = await DevopsHttpClient.PostAsync("_apis/git/repositories?api-version=6.0", GetRequestBody(request));
-
-			response.EnsureSuccessStatusCode();
-            
-			return JsonConvert.DeserializeObject<Repository>(await response.Content.ReadAsStringAsync());
+			return await GetResponseAs<Repository>(response);
 		}
 
 		public async Task<Pipeline> CreatePipeline(Repository repository, CreatePipelineRequest request)
@@ -62,6 +59,19 @@ namespace DevopsQuickstart.Services
 		private static StringContent GetRequestBody(object obj)
 		{
 			return new StringContent(JsonConvert.SerializeObject(obj), Encoding.Default, "application/json");
+		}
+
+		private static async Task<T> GetResponseAs<T>(HttpResponseMessage response)
+		{
+			if (response.IsSuccessStatusCode)
+			{
+				return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+			}
+			else
+			{
+				var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(await response.Content.ReadAsStringAsync());
+				throw new Exception(errorResponse.Message);
+			}
 		}
 	}
 }
