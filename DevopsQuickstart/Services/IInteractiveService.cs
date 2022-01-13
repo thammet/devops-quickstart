@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using DevopsQuickstart.Models.Devops;
 using InteractiveConsole;
 
@@ -15,7 +13,7 @@ namespace DevopsQuickstart.Services
 		bool ShouldPushCodeNow();
 		bool ShouldCreatePipelinesNow();
 		bool ShouldRetry();
-		CreatePipelineRequest GetCreatePipelineRequest();
+		CreatePipelineRequest GetCreatePipelineRequest(List<string> ymlFiles);
 
 		void ShowMessage(string message);
 		void ShowError(string message);
@@ -41,15 +39,8 @@ namespace DevopsQuickstart.Services
 			};
 		}
 
-		public CreatePipelineRequest GetCreatePipelineRequest()
+		public CreatePipelineRequest GetCreatePipelineRequest(List<string> ymlFiles)
 		{
-			var ymlFiles = GetYmlFiles();
-			
-			if (!ymlFiles.Any())
-			{
-				return null;
-			}
-			
 			var menu = new Menu<string>();
 
 			foreach (var ymlFile in ymlFiles)
@@ -108,14 +99,6 @@ namespace DevopsQuickstart.Services
 			}
 
 			return menu.Get("Select a DevOps project");
-		}
-
-		private static List<string> GetYmlFiles()
-		{
-			var directory = Directory.GetCurrentDirectory();
-			return Directory.GetFiles(directory, "*.yml")
-				.Select(path => path.Replace(directory, ""))
-				.ToList();
 		}
 
 		public void ShowMessage(string message)

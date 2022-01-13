@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DevopsQuickstart.Models;
 using DevopsQuickstart.Models.Devops;
@@ -73,7 +75,9 @@ namespace DevopsQuickstart.Services
 
 		private async Task<List<Pipeline>> CreatePipelines()
 		{
-			if (!_interactiveService.ShouldCreatePipelinesNow())
+			var ymlFiles = GetYmlFiles();
+			
+			if (!ymlFiles.Any() || !_interactiveService.ShouldCreatePipelinesNow())
 			{
 				return new List<Pipeline>();
 			}
@@ -82,7 +86,7 @@ namespace DevopsQuickstart.Services
 
 			while (true)
 			{
-				var createPipelineRequest = _interactiveService.GetCreatePipelineRequest();
+				var createPipelineRequest = _interactiveService.GetCreatePipelineRequest(ymlFiles);
 
 				if (createPipelineRequest is null)
 				{
@@ -100,6 +104,14 @@ namespace DevopsQuickstart.Services
 			}
 			
 			return pipelines;
+		}
+		
+		private static List<string> GetYmlFiles()
+		{
+			var directory = Directory.GetCurrentDirectory();
+			return Directory.GetFiles(directory, "*.yml")
+				.Select(path => path.Replace(directory, ""))
+				.ToList();
 		}
 	}
 }
