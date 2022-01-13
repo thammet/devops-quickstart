@@ -12,7 +12,7 @@
         <RepositoryUrl>https://github.com/thammet/devops-quickstart</RepositoryUrl>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>devops-quickstart</ToolCommandName>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.1.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
