@@ -54,7 +54,7 @@ namespace DevopsQuickstart.Services
 				_interactiveService.ShowMessage($"Creating repository '{request.Name}'");
 				_interactiveService.Repository = await _devopsService.CreateRepository(request);
 				_interactiveService.ShowMessage($"Created Repository '{_interactiveService.Repository.Name}': {_interactiveService.Repository.WebUrl}");
-			});
+			}, false);
 			
 			return _interactiveService.Repository;
 		}

@@ -5,8 +5,8 @@ namespace DevopsQuickstart.Services
 {
 	public interface IRetryService
 	{
-		void Retry(Action action);
-		Task Retry(Func<Task> func);
+		void Retry(Action action, bool canCancel = true);
+		Task Retry(Func<Task> func, bool canCancel = true);
 	}
 
 	public class RetryService : IRetryService
@@ -18,7 +18,7 @@ namespace DevopsQuickstart.Services
 			_interactiveService = interactiveService;
 		}
 
-		public void Retry(Action action)
+		public void Retry(Action action, bool canCancel)
 		{
 			while (true)
 			{
@@ -31,7 +31,7 @@ namespace DevopsQuickstart.Services
 				{
 					_interactiveService.ShowError("An error has occured");
 					_interactiveService.ShowError(e.Message);
-					if (!_interactiveService.ShouldRetry())
+					if (canCancel && !_interactiveService.ShouldRetry())
 					{
 						return;
 					}
@@ -39,7 +39,7 @@ namespace DevopsQuickstart.Services
 			}
 		}
 		
-		public async Task Retry(Func<Task> func)
+		public async Task Retry(Func<Task> func, bool canCancel)
 		{
 			while (true)
 			{
@@ -52,7 +52,7 @@ namespace DevopsQuickstart.Services
 				{
 					_interactiveService.ShowError("An error has occured");
 					_interactiveService.ShowError(e.Message);
-					if (!_interactiveService.ShouldRetry())
+					if (canCancel && !_interactiveService.ShouldRetry())
 					{
 						return;
 					}

@@ -50,10 +50,7 @@ namespace DevopsQuickstart.Services
 		public async Task<Pipeline> CreatePipeline(Repository repository, CreatePipelineRequest request)
 		{
 			var response = await DevopsHttpClient.PostAsync($"{repository.Project.Id}/_apis/pipelines?api-version=6.0-preview.1", GetRequestBody(request));
-			
-			response.EnsureSuccessStatusCode();
-            
-			return JsonConvert.DeserializeObject<Pipeline>(await response.Content.ReadAsStringAsync());
+			return await GetResponseAs<Pipeline>(response);
 		}
 
 		private static StringContent GetRequestBody(object obj)
