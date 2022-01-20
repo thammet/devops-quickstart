@@ -26,7 +26,7 @@ namespace DevopsQuickstart.Services
 			DevopsHttpClient = new HttpClient();
 			DevopsHttpClient.BaseAddress = new Uri(devopsOptions.OrganizationUrl);
 			DevopsHttpClient.DefaultRequestHeaders.Accept.Clear();
-			DevopsHttpClient.DefaultRequestHeaders.Add("User-Agent", "VstsRestApiSamples");
+			DevopsHttpClient.DefaultRequestHeaders.Add("User-Agent", "thammettDevopsQuickstart");
 			DevopsHttpClient.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
 			DevopsHttpClient.DefaultRequestHeaders.Add("Authorization", devopsOptions.AuthHeader);
 		}
